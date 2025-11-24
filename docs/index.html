@@ -9,10 +9,22 @@
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 2rem;
+      max-width: 1200px;
+    }
+    table.dataTable tbody td {
+      white-space: normal;   /* permite saltos de línea en celdas largas */
+      word-break: break-word;
+    }
+    table.dataTable.stripe tbody tr:nth-child(odd) {
+      background-color: #f7f7f7; /* efecto “zebra” suave */
     }
     table.dataTable thead th {
-      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      background: #ffffff;
+    z-index: 1;
     }
+    <table id="rules-table" class="display stripe" style="width:100%">
   </style>
 </head>
 <body>
@@ -79,12 +91,37 @@
           tbody.appendChild(tr);
         });
 
+        // Filter columns
+        const thead = headerRow.parentElement;
+        const filterRow = document.createElement('tr');
+        fields.forEach(() => {
+          const th = document.createElement('th');
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = 'Filtering…';
+          input.style.width = '100%';
+          th.appendChild(input);
+          filterRow.appendChild(th);
+        });
+        thead.appendChild(filterRow);
+
         // If the table is already built, activate DataTables
         $('#rules-table').DataTable({
           pageLength: 25,
           lengthMenu: [10, 25, 50, 100],
           order: [] // No initial order by default
+          scrollX: true
+          language: {
+            url: "https://cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
+          }
         });
+      // Apply filter by column
+      table.columns().every(function (colIdx) {
+        const input = thead.querySelectorAll('tr:nth-child(2) th input')[colIdx];
+        input.addEventListener('keyup', () => {
+          table.column(colIdx).search(input.value).draw();
+        });
+      });
       })
       .catch(error => {
         console.error(error);
