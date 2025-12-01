@@ -11,7 +11,7 @@
       margin: 2rem;
     }
     table.dataTable {
-      width: 100$ !important;
+      width: 100% !important;
     }
     .dataTables_wrapper {
       width: 100%;
@@ -98,12 +98,13 @@
             } else {
               td.textContent = cellValue;
             }
-        
             tr.appendChild(td);
           });
-        const thead = headerRow.parentElement;
+          tbody.appendChild(tr);
+        });
   
         // ----------- CREATE FILTER ROW WITH MULTI-SELECTS -----------
+        const thead = headerRow.parentElement;
         const filterRow = document.createElement('tr');
         filterRow.classList.add("filters");
   
