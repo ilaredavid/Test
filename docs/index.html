@@ -96,30 +96,12 @@
         fields.forEach((field, colIdx) => {
           const th = document.createElement('th');
   
-          // Unique values for this column
-          const uniqueValues = [...new Set(data.map(r => r[field]).filter(v => v && v.trim() !== ""))];
-  
-          // Create multi-select
-          const select = document.createElement('select');
-          select.multiple = true;
-          select.classList.add("filter-select");
-  
-          // "(Todos)" option
-          const optAll = document.createElement('option');
-          optAll.value = "";
-          optAll.textContent = "(Todos)";
-          optAll.selected = true;
-          select.appendChild(optAll);
-  
-          // Values
-          uniqueValues.sort().forEach(val => {
-            const opt = document.createElement('option');
-            opt.value = val;
-            opt.textContent = val;
-            select.appendChild(opt);
-          });
-  
-          th.appendChild(select);
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "Filter…";
+          input.classList.add("filter-input");
+
+          th.appendChild(input);
           filterRow.appendChild(th);
         });
   
@@ -133,28 +115,17 @@
           order: [],
           scrollX: true,
           language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
+            url: "https://cdn.datatables.net/plug-ins/1.13.8/i18n/en-US.json"
           }
         });
   
         // ----------- APPLY MULTI-SELECT FILTERS PER COLUMN --------------
   
         table.columns().every(function (colIdx) {
-          const select = thead.querySelectorAll("tr.filters select")[colIdx];
-  
-          select.addEventListener("change", () => {
-            const selected = [...select.selectedOptions].map(o => o.value).filter(v => v !== "");
-  
-            if (selected.length === 0) {
-              // Show all
-              table.column(colIdx).search("", true, false).draw();
-              return;
-            }
-  
-            // Build regex OR: val1|val2|val3
-            const regex = selected.map(v => `^${escapeRegex(v)}$`).join("|");
-  
-            table.column(colIdx).search(regex, true, false).draw();
+          const input = thead.querySelectorAll("tr.filters input")[colIdx];
+
+          input.addEventListener("keyup", function () {
+          table.column(colIdx).search(this.value).draw();
           });
         });
   
