@@ -128,11 +128,11 @@
                 td.innerHTML = `<a href="${link}" target="_blank" rel="noopener noreferrer">${escapeHtml(displayText)}</a>`;
               } else {
                 td.textContent = cellValue;
-              });
+              }
               tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
           });
-          tbody.appendChild(tr);
-        });
         // ----------- CREATE FILTER ROW -----------
         const thead = headerRow.parentElement;
         const filterRow = document.createElement('tr');
