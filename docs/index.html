@@ -94,7 +94,7 @@
             let cellValue = row[name] ?? '';
             let normalized = cellValue.trim().toUpperCase();
         
-            if (colIdx === typeColumnIndex && cellValue === "AGGREGATION") {
+            if (colIdx === typeColumnIndex && normalized === "AGGREGATION") {
               td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Aggregation%20rules.md" target="_blank">${cellValue}</a>`;
             } else {
               td.textContent = cellValue;
