@@ -93,7 +93,7 @@
             const td = document.createElement('td');
             let cellValue = row[name] ?? '';
         
-            if (colIdx === typeColumnIndex && cellValue === "Aggregation") {
+            if (colIdx === typeColumnIndex && cellValue === "AGGREGATION") {
               td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Aggregation%20rules.md" target="_blank">${cellValue}</a>`;
             } else {
               td.textContent = cellValue;
