@@ -93,6 +93,16 @@
   
         // Fill table body
         const tbody = document.getElementById('rules-body');
+        
+        const typeLinks = {
+              "AGGREGATION": "https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Aggregation%20rules.md",
+              "BOUNDARY": "https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Boundary%20rules.md",
+              "CHOICE": "https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Choice%20rules.md",
+              "INFORMATION": "https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Information%20rules.md",
+              "PAYOFF": "https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Payoff%20rules.md",
+              "POSITION": "https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Position%20rules.md",
+              "SCOPE": "https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Scope%20rules.md"
+            };
   
         data.forEach(row => {
           const tr = document.createElement('tr');
@@ -100,30 +110,29 @@
           fields.forEach((name, colIdx) => {
             const td = document.createElement('td');
             let cellValue = row[name] ?? '';
-  
+
             // Normalize cell value (robust)
             let normalized = (cellValue ?? '')
               .replace(/[\uFEFF\u00A0\u200B]/g, '')
               .replace(/[\r\n]/g, '')
               .trim()
               .toUpperCase();
-  
-            // DEBUG: si quieres ver valores para la fila problema, descomenta:
-  
-            // Use normalized and also ensure that the column index was found
-            if (typeColumnIndex !== -1 && colIdx === typeColumnIndex && normalized === "AGGREGATION") {
-              // Show trimmed original value as link text
-              const displayText = (cellValue ?? '').replace(/[\uFEFF\u00A0\u200B]/g, '').replace(/[\r\n]/g, '').trim();
-              td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Aggregation%20rules.md" target="_blank" rel="noopener noreferrer">${escapeHtml(displayText)}</a>`;
-            } else {
-              td.textContent = cellValue;
-            }
-            tr.appendChild(td);
+
+            if (colIdx === typeColumnIndex) {
+              const link = typeLinks[normalized];
+              if (link) {
+                const displayText = (cellValue ?? '')
+                  .replace(/[\uFEFF\u00A0\u200B]/g, '')
+                  .replace(/[\r\n]/g, '')
+                  .trim();
+                td.innerHTML = `<a href="${link}" target="_blank" rel="noopener noreferrer">${escapeHtml(displayText)}</a>`;
+              } else {
+                td.textContent = cellValue;
+              });
+              tr.appendChild(td);
           });
-  
           tbody.appendChild(tr);
         });
-  
         // ----------- CREATE FILTER ROW -----------
         const thead = headerRow.parentElement;
         const filterRow = document.createElement('tr');
