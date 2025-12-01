@@ -51,34 +51,31 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
-    // Path to CSV
     const csvUrl = 'rules_taxonomy_v4.csv';
-
+  
     fetch(csvUrl)
       .then(response => {
-        if (!response.ok) {
-          throw new Error('Error loading CSV: ' + response.status);
-        }
+        if (!response.ok) throw new Error('Error loading CSV: ' + response.status);
         return response.text();
       })
       .then(csvText => {
         const parsed = Papa.parse(csvText, {
-          header: true,      
+          header: true,
           skipEmptyLines: true
         });
-
-        const fields = parsed.meta.fields; // Columna names
-        const data = parsed.data; // Object arrays
-
-        // Build a header
+  
+        const fields = parsed.meta.fields;
+        const data = parsed.data;
+  
+        // Build header
         const headerRow = document.getElementById('rules-header-row');
         fields.forEach(name => {
           const th = document.createElement('th');
           th.textContent = name;
           headerRow.appendChild(th);
         });
-        
-        // Build a body with tables
+  
+        // Fill table body
         const tbody = document.getElementById('rules-body');
         data.forEach(row => {
           const tr = document.createElement('tr');
@@ -89,22 +86,47 @@
           });
           tbody.appendChild(tr);
         });
-
-        // Filter columns
+  
         const thead = headerRow.parentElement;
+  
+        // ----------- CREATE FILTER ROW WITH MULTI-SELECTS -----------
         const filterRow = document.createElement('tr');
-        fields.forEach(() => {
+        filterRow.classList.add("filters");
+  
+        fields.forEach((field, colIdx) => {
           const th = document.createElement('th');
-          const input = document.createElement('input');
-          input.type = 'text';
-          input.placeholder = 'Filtering…';
-          input.style.width = '100%';
-          th.appendChild(input);
+  
+          // Unique values for this column
+          const uniqueValues = [...new Set(data.map(r => r[field]).filter(v => v && v.trim() !== ""))];
+  
+          // Create multi-select
+          const select = document.createElement('select');
+          select.multiple = true;
+          select.classList.add("filter-select");
+  
+          // "(Todos)" option
+          const optAll = document.createElement('option');
+          optAll.value = "";
+          optAll.textContent = "(Todos)";
+          optAll.selected = true;
+          select.appendChild(optAll);
+  
+          // Values
+          uniqueValues.sort().forEach(val => {
+            const opt = document.createElement('option');
+            opt.value = val;
+            opt.textContent = val;
+            select.appendChild(opt);
+          });
+  
+          th.appendChild(select);
           filterRow.appendChild(th);
         });
+  
         thead.appendChild(filterRow);
-
-        // Initialize Datatables
+  
+        // ------------- INIT DATATABLES -------------------
+  
         const table = $('#rules-table').DataTable({
           pageLength: 25,
           lengthMenu: [10, 25, 50, 100],
@@ -113,20 +135,39 @@
           language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
           }
-      });
-        
-      // Apply filter by column
-      table.columns().every(function (colIdx) {
-        const input = thead.querySelectorAll('tr:nth-child(2) th input')[colIdx];
-        input.addEventListener('keyup', () => {
-          table.column(colIdx).search(input.value).draw();
         });
-      });
+  
+        // ----------- APPLY MULTI-SELECT FILTERS PER COLUMN --------------
+  
+        table.columns().every(function (colIdx) {
+          const select = thead.querySelectorAll("tr.filters select")[colIdx];
+  
+          select.addEventListener("change", () => {
+            const selected = [...select.selectedOptions].map(o => o.value).filter(v => v !== "");
+  
+            if (selected.length === 0) {
+              // Show all
+              table.column(colIdx).search("", true, false).draw();
+              return;
+            }
+  
+            // Build regex OR: val1|val2|val3
+            const regex = selected.map(v => `^${escapeRegex(v)}$`).join("|");
+  
+            table.column(colIdx).search(regex, true, false).draw();
+          });
+        });
+  
+        // Escape regex helper
+        function escapeRegex(str) {
+          return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
       })
       .catch(error => {
         console.error(error);
-        alert('There was a problem loading the data table. Check the console for details.');
+        alert('Error loading table. Check console.');
       });
   </script>
 </body>
 </html>
+
