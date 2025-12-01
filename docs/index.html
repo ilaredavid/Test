@@ -65,15 +65,18 @@
         const decoder = new TextDecoder("utf-8");
         const csvText = decoder.decode(buffer);
         return csvText;
-       }) 
+      })
       .then(csvText => {
         const parsed = Papa.parse(csvText, {
           header: true,
           skipEmptyLines: true
         });
   
-        const fields = parsed.meta.fields;
+        const fields = parsed.meta.fields; // original field names
         const data = parsed.data;
+  
+        // --- DEBUG: muestra campos detectados en consola (puedes quitar después)
+        console.log("Detected CSV fields:", fields);
   
         // Build header
         const headerRow = document.getElementById('rules-header-row');
@@ -83,44 +86,59 @@
           headerRow.appendChild(th);
         });
   
+        // --- Find index of "Type" robustly: normalize field names
+        const normalizeField = f => (f ?? '').replace(/[\uFEFF\u00A0\u200B]/g, '').replace(/[\r\n]/g, '').trim().toUpperCase();
+        const typeColumnIndex = fields.findIndex(f => normalizeField(f) === 'TYPE');
+        console.log("typeColumnIndex:", typeColumnIndex); // -1 if not found
+  
         // Fill table body
-        const typeColumnIndex = fields.indexOf("Type");
         const tbody = document.getElementById('rules-body');
-        ///
+  
         data.forEach(row => {
           const tr = document.createElement('tr');
+  
           fields.forEach((name, colIdx) => {
             const td = document.createElement('td');
             let cellValue = row[name] ?? '';
-            let normalized = cellValue
+  
+            // Normalize cell value (robust)
+            let normalized = (cellValue ?? '')
               .replace(/[\uFEFF\u00A0\u200B]/g, '')
               .replace(/[\r\n]/g, '')
               .trim()
               .toUpperCase();
-        
-            if (colIdx === typeColumnIndex && normalized === "AGGREGATION") {
-              td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Aggregation%20rules.md" target="_blank">${cellValue}</a>`;
+  
+            // DEBUG: si quieres ver valores para la fila problema, descomenta:
+            // if (normalized.includes('AGGREGATION')) console.log('Row value normalized:', normalized, 'original:', JSON.stringify(cellValue));
+  
+            // Use normalized and also ensure that the column index was found
+            if (typeColumnIndex !== -1 && colIdx === typeColumnIndex && normalized === "AGGREGATION") {
+              // Show trimmed original value as link text
+              const displayText = (cellValue ?? '').replace(/[\uFEFF\u00A0\u200B]/g, '').replace(/[\r\n]/g, '').trim();
+              td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Aggregation%20rules.md" target="_blank" rel="noopener noreferrer">${escapeHtml(displayText)}</a>`;
             } else {
               td.textContent = cellValue;
             }
+  
             tr.appendChild(td);
           });
+  
           tbody.appendChild(tr);
         });
   
-        // ----------- CREATE FILTER ROW WITH MULTI-SELECTS -----------
+        // ----------- CREATE FILTER ROW -----------
         const thead = headerRow.parentElement;
         const filterRow = document.createElement('tr');
         filterRow.classList.add("filters");
   
-        fields.forEach((field, colIdx) => {
+        fields.forEach((field) => {
           const th = document.createElement('th');
   
           const input = document.createElement("input");
           input.type = "text";
           input.placeholder = "Filter…";
           input.classList.add("filter-input");
-
+  
           th.appendChild(input);
           filterRow.appendChild(th);
         });
@@ -128,7 +146,6 @@
         thead.appendChild(filterRow);
   
         // ------------- INIT DATATABLES -------------------
-  
         const table = $('#rules-table').DataTable({
           pageLength: 25,
           lengthMenu: [10, 25, 50, 100],
@@ -140,20 +157,25 @@
           }
         });
   
-        // ----------- APPLY MULTI-SELECT FILTERS PER COLUMN --------------
-  
+        // ----------- APPLY FILTERS PER COLUMN --------------
         table.columns().every(function (colIdx) {
           const input = thead.querySelectorAll("tr.filters input")[colIdx];
-
+  
           input.addEventListener("keyup", function () {
-          table.column(colIdx).search(this.value).draw();
+            table.column(colIdx).search(this.value).draw();
           });
         });
   
-        // Escape regex helper
-        function escapeRegex(str) {
-          return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        // small html-escape for link text
+        function escapeHtml(s) {
+          return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
         }
+  
       })
       .catch(error => {
         console.error(error);
