@@ -118,55 +118,6 @@
             } else {
               td.textContent = cellValue;
             }
-
-            if (typeColumnIndex !== -1 && colIdx === typeColumnIndex && normalized === "BOUNDARY") {
-              // Show trimmed original value as link text
-              const displayText = (cellValue ?? '').replace(/[\uFEFF\u00A0\u200B]/g, '').replace(/[\r\n]/g, '').trim();
-              td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Boundary%20rules.md" target="_blank" rel="noopener noreferrer">${escapeHtml(displayText)}</a>`;
-            } else {
-              td.textContent = cellValue;
-            }
-            
-            if (typeColumnIndex !== -1 && colIdx === typeColumnIndex && normalized === "CHOICE") {
-              // Show trimmed original value as link text
-              const displayText = (cellValue ?? '').replace(/[\uFEFF\u00A0\u200B]/g, '').replace(/[\r\n]/g, '').trim();
-              td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Choice%20rules.md" target="_blank" rel="noopener noreferrer">${escapeHtml(displayText)}</a>`;
-            } else {
-              td.textContent = cellValue;
-            }
-
-            if (typeColumnIndex !== -1 && colIdx === typeColumnIndex && normalized === "INFORMATION") {
-              // Show trimmed original value as link text
-              const displayText = (cellValue ?? '').replace(/[\uFEFF\u00A0\u200B]/g, '').replace(/[\r\n]/g, '').trim();
-              td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Information%20rules.md" target="_blank" rel="noopener noreferrer">${escapeHtml(displayText)}</a>`;
-            } else {
-              td.textContent = cellValue;
-            }
-
-            if (typeColumnIndex !== -1 && colIdx === typeColumnIndex && normalized === "PAYOFF") {
-              // Show trimmed original value as link text
-              const displayText = (cellValue ?? '').replace(/[\uFEFF\u00A0\u200B]/g, '').replace(/[\r\n]/g, '').trim();
-              td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Payoff%20rules.md" target="_blank" rel="noopener noreferrer">${escapeHtml(displayText)}</a>`;
-            } else {
-              td.textContent = cellValue;
-            }
-
-            if (typeColumnIndex !== -1 && colIdx === typeColumnIndex && normalized === "POSITION") {
-              // Show trimmed original value as link text
-              const displayText = (cellValue ?? '').replace(/[\uFEFF\u00A0\u200B]/g, '').replace(/[\r\n]/g, '').trim();
-              td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Position%20rules.md" target="_blank" rel="noopener noreferrer">${escapeHtml(displayText)}</a>`;
-            } else {
-              td.textContent = cellValue;
-            }
-
-            if (typeColumnIndex !== -1 && colIdx === typeColumnIndex && normalized === "SCOPE") {
-              // Show trimmed original value as link text
-              const displayText = (cellValue ?? '').replace(/[\uFEFF\u00A0\u200B]/g, '').replace(/[\r\n]/g, '').trim();
-              td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Scope%20rules.md" target="_blank" rel="noopener noreferrer">${escapeHtml(displayText)}</a>`;
-            } else {
-              td.textContent = cellValue;
-            }
-  
             tr.appendChild(td);
           });
   
