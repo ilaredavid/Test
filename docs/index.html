@@ -38,6 +38,7 @@
     /* ---- HEADER -----*/
      table.dataTable thead th {
       background: #f3f3f3;
+      color: #222;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.02em;
@@ -67,18 +68,89 @@
     
     table.dataTable td a:hover {
       text-decoration: underline;
+      color: #003f80;
     }
-    
-    /* Optional */
-    table.dataTable td a::after {
-      content: " ↗";
-      font-size: 0.75em;
-      opacity: 0.6;
-    }
+   /* ===========================
+         DARK MODE THEME
+   =========================== */
+
+  body.dark {
+    background: #1a1a1a;
+    color: #e6e6e6;
+  }
+  
+  /* Header & text */
+  body.dark h1 {
+    color: #ffffff;
+  }
+  
+  body.dark p {
+    color: #dcdcdc;
+  }
+  
+  /* DataTable general */
+  body.dark table.dataTable {
+    background: #262626;
+    color: #e6e6e6;
+    border-color: #555;
+  }
+  
+  /* Header cells */
+  body.dark table.dataTable thead th {
+    background: #333 !important;
+    color: #e6e6e6;
+    border-bottom: 2px solid #555;
+  }
+  
+  /* Body cells */
+  body.dark table.dataTable tbody td {
+    border-color: #444;
+    color: #e6e6e6;
+  }
+  
+  /* Zebra stripes */
+  body.dark table.dataTable.stripe tbody tr:nth-child(odd) {
+    background-color: #2a2a2a !important;
+  }
+  
+  /* Hover */
+  body.dark table.dataTable tbody tr:hover {
+    background-color: #3a3a3a !important;
+  }
+  
+  /* Filter inputs */
+  body.dark .filter-input {
+    background: #2e2e2e;
+    color: #e6e6e6;
+    border: 1px solid #555;
+  }
+  
+  body.dark .filter-input:focus {
+    border-color: #66aaff;
+    box-shadow: 0 0 3px rgba(102,170,255,0.35);
+  }
+  
+  /* Links */
+  body.dark table.dataTable td a {
+    color: #7ab8ff;
+  }
+  
+  body.dark table.dataTable td a:hover {
+    color: #a8d2ff;
+  }
   </style>
 </head>
 <body>
   <h1>Taxonomy V4</h1>
+  <button id="theme-toggle" style="
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #f4f4f4;
+      cursor: pointer;
+      margin-bottom: 1rem;
+    ">Dark mode
+  </button>
   <p>
     Search, sort and filter all the content included in the version 4.  
     You can download the raw CSV file from <a href="rules_taxonomy_v4.csv">here</a>.
@@ -121,10 +193,7 @@
   
         const fields = parsed.meta.fields; // original field names
         const data = parsed.data;
-  
-        // --- DEBUG: muestra campos detectados en consola (puedes quitar después)
-        console.log("Detected CSV fields:", fields);
-  
+        
         // Build header
         const headerRow = document.getElementById('rules-header-row');
         fields.forEach(name => {
@@ -213,7 +282,7 @@
           lengthMenu: [10, 25, 50, 100],
           order: [],
           scrollX: true,
-          autoWidth: false,
+          autoWidth: true,
           language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.8/i18n/en-US.json"
           }
@@ -243,6 +312,28 @@
         console.error(error);
         alert('Error loading table. Check console.');
       });
+    // ======================
+    // DARK MODE TOGGLE
+    // ======================
+    const toggleBtn = document.getElementById("theme-toggle");
+    
+    // Load saved theme if exists
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
+      toggleBtn.textContent = "Light mode";
+    }
+    
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+    
+      if (document.body.classList.contains("dark")) {
+        toggleBtn.textContent = "Light mode";
+        localStorage.setItem("theme", "dark");
+      } else {
+        toggleBtn.textContent = "Dark mode";
+        localStorage.setItem("theme", "light");
+      }
+});
   </script>
 </body>
 </html>
