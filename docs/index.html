@@ -12,23 +12,22 @@
       max-width: 1200px;
     }
     table.dataTable tbody td {
-      white-space: normal;   /* permite saltos de línea en celdas largas */
+      white-space: normal;
       word-break: break-word;
     }
     table.dataTable.stripe tbody tr:nth-child(odd) {
-      background-color: #f7f7f7; /* efecto “zebra” suave */
+      background-color: #f7f7f7;
     }
     table.dataTable thead th {
       position: sticky;
       top: 0;
       background: #ffffff;
-    z-index: 1;
+      z-index: 1;
     }
-    <table id="rules-table" class="display stripe" style="width:100%">
   </style>
 </head>
 <body>
-  <h1>Rules taxonomy (interactive)</h1>
+  <h1>Taxonomy V4</h1>
   <p>
     Search, sort and filter the taxonomy.  
     You can download the raw CSV file from
@@ -64,12 +63,12 @@
       })
       .then(csvText => {
         const parsed = Papa.parse(csvText, {
-          header: true,        // primera fila como cabecera
+          header: true,      
           skipEmptyLines: true
         });
 
-        const fields = parsed.meta.fields; // nombres de columnas
-        const data = parsed.data;          // array de objetos: {col1: ..., col2: ...}
+        const fields = parsed.meta.fields; // Columna names
+        const data = parsed.data; // Object arrays
 
         // Build a header
         const headerRow = document.getElementById('rules-header-row');
@@ -78,7 +77,7 @@
           th.textContent = name;
           headerRow.appendChild(th);
         });
-
+        
         // Build a body with tables
         const tbody = document.getElementById('rules-body');
         data.forEach(row => {
@@ -105,16 +104,17 @@
         });
         thead.appendChild(filterRow);
 
-        // If the table is already built, activate DataTables
-        $('#rules-table').DataTable({
+        // Initialize Datatables
+        const table = $('#rules-table').DataTable({
           pageLength: 25,
           lengthMenu: [10, 25, 50, 100],
-          order: [] // No initial order by default
-          scrollX: true
+          order: [],
+          scrollX: true,
           language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
           }
-        });
+      });
+        
       // Apply filter by column
       table.columns().every(function (colIdx) {
         const input = thead.querySelectorAll('tr:nth-child(2) th input')[colIdx];
