@@ -58,6 +58,7 @@
       .then(buffer => {
         const decoder = new TextDecoder("utf-8");
         const csvText = decoder.decode(buffer);
+        return csvText;
        }) 
       .then(csvText => {
         const parsed = Papa.parse(csvText, {
