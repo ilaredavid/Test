@@ -92,7 +92,11 @@
           fields.forEach((name, colIdx) => {
             const td = document.createElement('td');
             let cellValue = row[name] ?? '';
-            let normalized = cellValue.trim().toUpperCase();
+            let normalized = cellValue
+              .replace(/[\uFEFF\u00A0\u200B]/g, '')
+              .replace(/[\r\n]/g, '')
+              .trim()
+              .toUpperCase();
         
             if (colIdx === typeColumnIndex && normalized === "AGGREGATION") {
               td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Aggregation%20rules.md" target="_blank">${cellValue}</a>`;
