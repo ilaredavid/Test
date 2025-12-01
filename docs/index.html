@@ -106,18 +106,18 @@
   
         data.forEach(row => {
           const tr = document.createElement('tr');
-  
           fields.forEach((name, colIdx) => {
             const td = document.createElement('td');
             let cellValue = row[name] ?? '';
-
+        
             // Normalize cell value (robust)
             let normalized = (cellValue ?? '')
               .replace(/[\uFEFF\u00A0\u200B]/g, '')
               .replace(/[\r\n]/g, '')
               .trim()
               .toUpperCase();
-
+        
+            // If this is the Type column → insert link
             if (colIdx === typeColumnIndex) {
               const link = typeLinks[normalized];
               if (link) {
@@ -125,14 +125,22 @@
                   .replace(/[\uFEFF\u00A0\u200B]/g, '')
                   .replace(/[\r\n]/g, '')
                   .trim();
-                td.innerHTML = `<a href="${link}" target="_blank" rel="noopener noreferrer">${escapeHtml(displayText)}</a>`;
+        
+                td.innerHTML = `
+                  <a href="${link}" target="_blank" rel="noopener noreferrer">
+                    ${escapeHtml(displayText)}
+                  </a>`;
               } else {
                 td.textContent = cellValue;
               }
-              tr.appendChild(td);
-            });
-            tbody.appendChild(tr);
+            } else {
+              td.textContent = cellValue;
+            }
+            tr.appendChild(td);
           });
+          tbody.appendChild(tr);
+        });
+  
         // ----------- CREATE FILTER ROW -----------
         const thead = headerRow.parentElement;
         const filterRow = document.createElement('tr');
