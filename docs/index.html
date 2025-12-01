@@ -84,17 +84,23 @@
         });
   
         // Fill table body
+        const typeColumnIndex = fields.indexOf("Type");
         const tbody = document.getElementById('rules-body');
+        ///
         data.forEach(row => {
           const tr = document.createElement('tr');
-          fields.forEach(name => {
+          fields.forEach((name, colIdx) => {
             const td = document.createElement('td');
-            td.textContent = row[name] ?? '';
+            let cellValue = row[name] ?? '';
+        
+            if (colIdx === typeColumnIndex && cellValue === "Aggregation") {
+              td.innerHTML = `<a href="https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/2%20Aggregation%20rules.md" target="_blank">${cellValue}</a>`;
+            } else {
+              td.textContent = cellValue;
+            }
+        
             tr.appendChild(td);
           });
-          tbody.appendChild(tr);
-        });
-  
         const thead = headerRow.parentElement;
   
         // ----------- CREATE FILTER ROW WITH MULTI-SELECTS -----------
