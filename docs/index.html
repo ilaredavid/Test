@@ -73,12 +73,7 @@
    /* ===========================
          DARK MODE THEME
    =========================== */
-
-  body.dark-mode {
-    background: #1a1a1a;
-    color: #e6e6e6;
-  }
-  
+    
   /* Header & text */
   body.dark-mode h1 {
     color: #ffffff;
@@ -138,54 +133,87 @@
   body.dark-mode table.dataTable td a:hover {
     color: #a8d2ff;
   }
-  .dark-mode-mode-btn {
-    position: fixed;
-    top: 15px;
-    right: 20px;
-    background: #f0f0f0;
-    border: none;
-    border-radius: 50%;
-    padding: 10px;
+
+    /* ---- TOGGLE PLACEMENT ---- */
+  #theme-toggle-container {
+    position: absolute;
+    top: 20px;             /* Ajusta según tu diseño */
+    right: 20px;           /* Esquina superior derecha */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+  }
+  
+  .toggle-label {
+    font-size: 16px;
+    user-select: none;
+  }
+  
+  /* ---- TOGGLE SWITCH STYLE ---- */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    background: #ccc;
+    border-radius: 25px;
+    position: relative;
+    transition: 0.3s;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    transition: background 0.3s ease, transform 0.2s ease;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
   }
-
-  .dark-mode-btn:hover {
-      transform: scale(1.1);
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #fff;
+    transition: 0.4s;
+    border-radius: 50%;
   }
-
-  .dark-mode-btn svg {
-      color: #333;
+  
+  input:checked + .slider {
+    background-color: #1E293B;
   }
-
-  /* Dark mode styles */
-  body.dark-mode .dark-mode-btn {
-      background: #333;
-  }
-
-  body.dark-mode .dark-mode-btn svg {
-      color: #fff;
+  
+  input:checked + .slider:before {
+    transform: translateX(24px);
   }
 
   </style>
 </head>
 <body>
-  <button id="darkModeToggle" class="dark-mode-btn" aria-label="Toggle dark mode">
-    <svg id="darkModeIcon" width="20" height="20" viewBox="0 0 24 24">
-        <path fill="currentColor" 
-              d="M12 2a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1zm7.07 3.93a1 1 0 0 1 
-              0 1.41l-1.41 1.41a1 1 0 1 1-1.41-1.41l1.41-1.41a1 1 0 0 1 1.41 0zM21 
-              11h-2a1 1 0 0 1 0-2h2a1 1 0 1 1 0 2zm-3.93 7.07a1 1 0 0 1-1.41 0l-1.41-1.41a1 1 
-              0 0 1 1.41-1.41l1.41 1.41a1 1 0 0 1 0 1.41zM13 21v-2a1 1 0 1 1 2 0v2a1 1 
-              0 1 1-2 0zm-7.07-3.93a1 1 0 0 1 0-1.41l1.41-1.41a1 1 
-              0 1 1 1.41 1.41L7.34 17.07a1 1 0 0 1-1.41 0zM3 13H1a1 1 0 1 1 0-2h2a1 1 
-              0 1 1 0 2zm3.93-7.07a1 1 0 0 1 1.41 0l1.41 1.41A1 1 
-              0 1 1 8.34 8.76L6.93 7.34a1 1 0 0 1 0-1.41zM12 7a5 5 0 1 0 0 10 5 5 
-              0 0 0 0-10z"/>
-    </svg>
-  </button>
-  <h1>Taxonomy V4</h1>
+  <header style="position: relative;">
+   <h1>Taxonomy V4</h1>
+   <div id="theme-toggle-container">
+    <label class="switch">
+      <input type="checkbox" id="theme-toggle">
+      <span class="slider"></span>
+    </label>
+    <span class="toggle-label">Dark Mode</span>
+  </div>
+  </header>
+  
   <p>
     Search, sort and filter all the content included in the version 4.  
     You can download the raw CSV file from <a href="rules_taxonomy_v4.csv">here</a>.
@@ -349,19 +377,19 @@
       });
     
     // DARK MODE TOGGLE
-    document.getElementById("darkModeToggle").addEventListener("click", function () {
-        document.body.classList.toggle("dark-mode");
-    
-        // Save preference
-        localStorage.setItem("darkMode", 
-            document.body.classList.contains("dark-mode") ? "enabled" : "disabled"
-        );
-    });
-    
+    const toggle = document.getElementById("theme-toggle");
+
     // Load saved preference
     if (localStorage.getItem("darkMode") === "enabled") {
-        document.body.classList.add("dark-mode");
+      document.body.classList.add("dark-mode");
+      toggle.checked = true;
     }
+    
+    // Toggle
+    toggle.addEventListener("change", () => {
+      document.body.classList.toggle("dark-mode", toggle.checked);
+      localStorage.setItem("darkMode", toggle.checked ? "enabled" : "disabled");
+    });
 
   </script>
 </body>
