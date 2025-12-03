@@ -304,22 +304,22 @@
                   .trim();
               
               const normalized = cleanValue.toUpperCase();
-              if (normalized.includes ("(FAQ)") {
+              if (normalized.includes ("(FAQ)")) {
                 const base = normalized.replace("(FAQ)", "").trim();
                 const faqKey = Object.keys(typeLinks).find(k => k.startsWith(base));
         
                 if (faqKey) {
                   const link = typeLinks[faqKey];
                   
-                td.innerHTML = `
-                  <a href="${link}" target="_blank" rel="noopener noreferrer">
-                    ${escapeHtml(cleanValue)}
-                  </a>`;
-              } else {
-                td.textContent = cellValue;
-              }
+                  td.innerHTML = `
+                    <a href="${link}" target="_blank" rel="noopener noreferrer">
+                      ${escapeHtml(cleanValue)}
+                    </a>`;
+                } else {
+                    td.textContent = cellValue;
+                }
             } else {
-              td.textContent = cellValue;
+                td.textContent = cellValue;
             }
             tr.appendChild(td);
           });
