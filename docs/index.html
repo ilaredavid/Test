@@ -298,30 +298,30 @@
         
             // If this is the Type column → insert link
             if (colIdx === typeColumnIndex) {
-              const cleanValue = (cellValue ?? '')
-                  .replace(/[\uFEFF\u00A0\u200B]/g, '')
-                  .replace(/[\r\n]/g, '')
-                  .trim();
+                const cleanValue = (cellValue ?? '')
+                    .replace(/[\uFEFF\u00A0\u200B]/g, '')
+                    .replace(/[\r\n]/g, '')
+                    .trim();
               
-              const normalized = cleanValue.toUpperCase();
-              if (normalized.includes ("(FAQ)")) {
-                const base = normalized.replace("(FAQ)", "").trim();
-                const faqKey = Object.keys(typeLinks).find(k => k.startsWith(base));
+                const normalized = cleanValue.toUpperCase();
+                if (normalized.includes ("(FAQ)")) {
+                    const base = normalized.replace("(FAQ)", "").trim();
+                    const faqKey = Object.keys(typeLinks).find(k => k.startsWith(base));
         
-                if (faqKey) {
-                  const link = typeLinks[faqKey];
+                    if (faqKey) {
+                        const link = typeLinks[faqKey];
                   
-                  td.innerHTML = `
-                    <a href="${link}" target="_blank" rel="noopener noreferrer">
-                      ${escapeHtml(cleanValue)}
-                    </a>`;
+                        td.innerHTML = `
+                          <a href="${link}" target="_blank" rel="noopener noreferrer">
+                            ${escapeHtml(cleanValue)}
+                          </a>`;
+                    } else {
+                      td.textContent = cellValue;
+                    }
                 } else {
                     td.textContent = cellValue;
                 }
-            } else {
-                td.textContent = cellValue;
-            }
-            tr.appendChild(td);
+                tr.appendChild(td);
           });
           tbody.appendChild(tr);
         });
