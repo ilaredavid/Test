@@ -291,22 +291,29 @@
   
         data.forEach(row => {
           const tr = document.createElement('tr');
+          
           fields.forEach((name, colIdx) => {
             const td = document.createElement('td');
             let cellValue = row[name] ?? '';
         
             // If this is the Type column → insert link
             if (colIdx === typeColumnIndex) {
-              const link = typeLinks;
-              if (link) {
-                const displayText = (cellValue ?? '')
+              const cleanValue = (cellValue ?? '')
                   .replace(/[\uFEFF\u00A0\u200B]/g, '')
                   .replace(/[\r\n]/g, '')
                   .trim();
+              
+              const normalized = cleanValue.toUpperCase();
+              if (normalized.includes ("(FAQ)") {
+                const base = normalized.replace("(FAQ)", "").trim();
+                const faqKey = Object.keys(typeLinks).find(k => k.startsWith(base));
         
+                if (faqKey) {
+                  const link = typeLinks[faqKey];
+                  
                 td.innerHTML = `
                   <a href="${link}" target="_blank" rel="noopener noreferrer">
-                    ${escapeHtml(displayText)}
+                    ${escapeHtml(cleanValue)}
                   </a>`;
               } else {
                 td.textContent = cellValue;
