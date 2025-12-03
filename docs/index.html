@@ -295,16 +295,9 @@
             const td = document.createElement('td');
             let cellValue = row[name] ?? '';
         
-            // Normalize cell value (robust)
-            let normalized = (cellValue ?? '')
-              .replace(/[\uFEFF\u00A0\u200B]/g, '')
-              .replace(/[\r\n]/g, '')
-              .trim()
-              .toUpperCase();
-        
             // If this is the Type column → insert link
             if (colIdx === typeColumnIndex) {
-              const link = typeLinks[normalized];
+              const link = typeLinks;
               if (link) {
                 const displayText = (cellValue ?? '')
                   .replace(/[\uFEFF\u00A0\u200B]/g, '')
