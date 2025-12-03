@@ -288,41 +288,51 @@
               "POSITION (FAQ)": "https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/7%20Position%20rules.md",
               "SCOPE (FAQ)": "https://github.com/ResilientRules/Rules-taxonomy/blob/main/FAQ/8%20Scope%20rules.md"
             };
-  
+
         data.forEach(row => {
           const tr = document.createElement('tr');
-          
+        
           fields.forEach((name, colIdx) => {
             const td = document.createElement('td');
             let cellValue = row[name] ?? '';
         
-            // If this is the Type column → insert link
+            // Solo en columna TYPE
             if (colIdx === typeColumnIndex) {
-                const cleanValue = (cellValue ?? '')
-                    .replace(/[\uFEFF\u00A0\u200B]/g, '')
-                    .replace(/[\r\n]/g, '')
-                    .trim();
-              
-                const normalized = cleanValue.toUpperCase();
-                if (normalized.includes ("(FAQ)")) {
-                    const base = normalized.replace("(FAQ)", "").trim();
-                    const faqKey = Object.keys(typeLinks).find(k => k.startsWith(base));
         
-                    if (faqKey) {
-                        const link = typeLinks[faqKey];
-                  
-                        td.innerHTML = `
-                          <a href="${link}" target="_blank" rel="noopener noreferrer">
-                            ${escapeHtml(cleanValue)}
-                          </a>`;
-                    } else {
-                      td.textContent = cellValue;
-                    }
+              // normalizar contenido de la celda
+              const cleanValue = (cellValue ?? '')
+                  .replace(/[\uFEFF\u00A0\u200B]/g, '')
+                  .replace(/[\r\n]/g, '')
+                  .trim();
+        
+              const normalized = cleanValue.toUpperCase();
+              if (normalized.includes("(FAQ)")) {
+        
+                const base = normalized.replace("(FAQ)", "").trim();
+                const faqKey = Object.keys(typeLinks).find(k => k.startsWith(base));
+        
+                if (faqKey) {
+                  const link = typeLinks[faqKey];
+        
+                  td.innerHTML = `
+                    <a href="${link}" target="_blank" rel="noopener noreferrer">
+                      ${escapeHtml(cleanValue)}
+                    </a>`;
                 } else {
-                    td.textContent = cellValue;
+                  td.textContent = cleanValue;
                 }
-                tr.appendChild(td);
+        
+              } else {
+                td.textContent = cellValue;
+              }
+        
+            } else {
+              td.textContent = cellValue;
+            }
+        
+            tr.appendChild(td);
           });
+        
           tbody.appendChild(tr);
         });
   
