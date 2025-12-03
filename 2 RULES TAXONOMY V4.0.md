@@ -1,6 +1,5 @@
-  Access the interactive online version here:
-  
-   [**INTERACTIVE VERSION (Open Web Tool)**](https://ilaredavid.github.io/Test/index.html)
+
+   [**INTERACTIVE VERSION**](https://ilaredavid.github.io/Test/index.html)
   
   If you prefer, you can continue reading this Markdown version below.
 
